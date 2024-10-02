@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmBrowser Sample</title>
+    <style>
+        .section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        hr {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <p class="section-title">Play sound</p>
+        <button onclick="playRingtones()">play</button>
+    </div>
+    <hr>
+
+    <div class="section">
+        <p class="section-title">Take Picture And Upload</p>
+        <button onclick="takePictureAndUpload()">capture</button>
+    </div>
+    <hr>
+
+    <div class="section">
+        <p class="section-title">Delete Pictures</p>
+        <button onclick="deletePictures()">delete</button>
+    </div>
+
+    <script>
+        /**
+         * [START] playRingtones API
+         * 
+         * This API plays an audio file.
+         * It supports both emwb.playRingtones(fileName) and emwb.playRingtones(fileName, callback) methods.
+         * Requires the runtime permission Manifest.permission.READ_EXTERNAL_STORAGE.
+         * 
+         * @param fileName : The relative path of the audio file, based on the paths /sdcard/0/Ringtones/, /storage/emulated/0/Ringtones/.
+         * @param callback : {
+         *      "result" : "Success",
+         *      "response" : "Playing ringtone : {fileName}",
+         *      "error" : "Error message"
+         * }
+         */
+        function playRingtones() {
+            //emwb.playRingtones("ok.wav");
+            emwb.playRingtones("ok.wav", 'playRingtones_callback');
+        }
+
+        function playRingtones_callback(cbData) {
+            console.log(cbData);
+            alert("result : " + cbData.result + "\nresponse : " + cbData.response + "\nerror : " + cbData.error);
+        }
+        /** [END] **/
+
+        /** 
+         * [START] takePictureAndUpload API
+         * 
+         * This feature allows you to take a picture and upload the captured image to a file server.
+         * Requires the runtime permission Manifest.permission.CAMERA.
+         * 
+         * @param url : Supports both http and https schemas.
+         * @param fileName : The file name of the image to be uploaded to the server.
+         * @param callback :
+         * ### example 1
+         * {
+         *   "result": "fail",
+         *   "error": "Invalid URL"
+         * }
+         * ### example 2
+         * {
+         *   "result": "fail",
+         *   "error": "Camera permission not granted"
+         * }
+         * ### example 3
+         * {
+         *   "result": "fail",
+         *   "error": "Camera capture failed or was canceled"
+         * }
+         * ### example 4
+         * {
+         *   "result": "fail",
+         *   "error": "{stack trace of the error}"
+         * }
+         * ### example 5
+         * {
+         *   "result": "success",
+         *   "error": "{response from server}"
+         * }
+         */
+        function takePictureAndUpload() {
+            var params = {
+                url : "http://192.168.120.90:5000/upload/",
+                fileName : "myImage777.jpg" 
+            };
+            const stringParams = JSON.stringify(params);
+            emwb.takePictureAndUpload(stringParams, 'take_picture_and_upload_callback');
+        }
+
+        function take_picture_and_upload_callback(cbData) {
+            console.log(cbData);
+            alert("result : " + cbData.result + "\nresponse : " + cbData.response + "\nerror : " + cbData.error);
+        };
+        /** [END] **/
+
+        /** 
+         * [START] deletePictures API
+         * 
+         * This API deletes all internal image files captured using the emwb.takePictureAndUpload API.
+         * 
+         * @param callback : {
+         *      "result" : "Success",
+         *      "response" : "totalFiles : {number of files that can be deleted}, deletedFiles : {number of files deleted}",
+         *      "error" : "Error message"
+         * }
+         */
+        function deletePictures() {
+            emwb.deletePictures('delete_pictures_callback');
+        }
+
+        function delete_pictures_callback(cbData) {
+            console.log(cbData);
+            alert("result : " + cbData.result + "\nresponse : " + cbData.response + "\nerror : " + cbData.error);
+        };
+        /** [END] **/
+    </script>
+</body>
+</html>
